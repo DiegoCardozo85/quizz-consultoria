@@ -21,15 +21,25 @@ exports.handler = async function(event) {
     });
 
     const data = await response.json();
+    const text = data.content && data.content[0] ? data.content[0].text : null;
+
+    if (!text) {
+      return {
+        statusCode: 500,
+        headers: { 'Access-Control-Allow-Origin': '*' },
+        body: JSON.stringify({ error: 'Empty response from API', raw: data })
+      };
+    }
 
     return {
       statusCode: 200,
       headers: { 'Access-Control-Allow-Origin': '*' },
-      body: JSON.stringify(data)
+      body: JSON.stringify({ text })
     };
   } catch (err) {
     return {
       statusCode: 500,
+      headers: { 'Access-Control-Allow-Origin': '*' },
       body: JSON.stringify({ error: err.message })
     };
   }
