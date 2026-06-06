@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagnóstico | Consultoria Premium Diego Cardozo</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #00e676;
+    --green-dark: #00c853;
+    --black: #080808;
+    --card: #111111;
+    --card2: #181818;
+    --border: #222222;
+    --text: #ffffff;
+    --muted: #888888;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0 0 60px;
+  }
+
+  /* HEADER */
+  .header {
+    width: 100%;
+    padding: 20px 24px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    letter-spacing: 0.15em;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--green);
+    text-transform: uppercase;
+  }
+
+  /* PROGRESS BAR */
+  .progress-wrap {
+    width: 100%;
+    max-width: 480px;
+    padding: 20px 24px 0;
+    display: none;
+  }
+  .progress-wrap.visible { display: block; }
+  .progress-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  .progress-bar {
+    width: 100%;
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--green);
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  /* MAIN CARD */
+  .card {
+    width: 100%;
+    max-width: 480px;
+    margin: 24px 24px 0;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px 28px;
+    animation: fadeUp 0.4s ease;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* INTRO SCREEN */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0,230,118,0.1);
+    border: 1px solid rgba(0,230,118,0.25);
+    color: var(--green);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    border-radius: 20px;
+    margin-bottom: 24px;
+  }
+
+  .intro-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    line-height: 1.05;
+    letter-spacing: 0.02em;
+    margin-bottom: 16px;
+  }
+  .intro-title span { color: var(--green); }
+
+  .intro-sub {
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 32px;
+  }
+
+  .btn-primary {
+    width: 100%;
+    background: var(--green);
+    color: #000;
+    border: none;
+    border-radius: 10px;
+    padding: 18px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .btn-primary:hover { background: var(--green-dark); }
+  .btn-primary:active { transform: scale(0.98); }
+  .btn-primary:disabled {
+    background: #333;
+    color: #666;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* QUESTION */
+  .q-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    color: var(--green);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .q-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    line-height: 1.15;
+    letter-spacing: 0.02em;
+    margin-bottom: 28px;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    background: var(--card2);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    text-align: left;
+  }
+  .option:hover {
+    border-color: rgba(0,230,118,0.4);
+    background: rgba(0,230,118,0.04);
+  }
+  .option.selected {
+    border-color: var(--green);
+    background: rgba(0,230,118,0.08);
+  }
+
+  .opt-letter {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    border-radius: 6px;
+    background: var(--border);
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, color 0.2s;
+  }
+  .option.selected .opt-letter {
+    background: var(--green);
+    color: #000;
+  }
+
+  .opt-text {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #ccc;
+    padding-top: 4px;
+  }
+  .option.selected .opt-text { color: #fff; }
+
+  /* CAPTURE SCREEN */
+  .capture-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 0.02em;
+    margin-bottom: 8px;
+  }
+  .capture-sub {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 28px;
+  }
+
+  .field-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .field-input {
+    width: 100%;
+    background: var(--card2);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s;
+    margin-bottom: 18px;
+  }
+  .field-input:focus { border-color: var(--green); }
+  .field-input::placeholder { color: #444; }
+
+  .consent-wrap {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .consent-check {
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+    margin-top: 2px;
+    accent-color: var(--green);
+    cursor: pointer;
+  }
+  .consent-text {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* LOADING SCREEN */
+  .loading-wrap {
+    text-align: center;
+    padding: 20px 0;
+  }
+  .spinner {
+    width: 48px;
+    height: 48px;
+    border: 3px solid var(--border);
+    border-top-color: var(--green);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 24px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+  }
+  .loading-sub {
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  /* RESULT SCREEN */
+  .result-header {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+  .result-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+  }
+  .result-name {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .result-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    color: var(--green);
+    letter-spacing: 0.05em;
+    line-height: 1.1;
+    margin-bottom: 4px;
+  }
+  .result-subtitle {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 24px 0;
+  }
+
+  .result-text {
+    font-size: 15px;
+    line-height: 1.75;
+    color: #ccc;
+    margin-bottom: 24px;
+  }
+
+  .result-section {
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 14px;
+  }
+  .result-section-title {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .result-section-title.desafios { color: #ff5252; }
+  .result-section-title.oportunidades { color: var(--green); }
+  .result-section-title.passos { color: #82b1ff; }
+
+  .result-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .result-list li {
+    font-size: 13px;
+    line-height: 1.55;
+    color: #bbb;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .result-list li::before {
+    content: '•';
+    font-size: 16px;
+    line-height: 1.2;
+    flex-shrink: 0;
+  }
+  .result-section-title.desafios ~ .result-list li::before { color: #ff5252; }
+  .result-section-title.oportunidades ~ .result-list li::before { color: var(--green); }
+  .result-section-title.passos ~ .result-list li::before { color: #82b1ff; }
+
+  .cta-section {
+    margin-top: 28px;
+    text-align: center;
+  }
+  .cta-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+  }
+  .cta-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+
+  .btn-whats {
+    width: 100%;
+    background: #25d366;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 16px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 17px;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    text-decoration: none;
+  }
+  .btn-whats:hover { background: #1ebe5a; }
+  .btn-whats:active { transform: scale(0.98); }
+
+  .btn-vendas {
+    width: 100%;
+    background: transparent;
+    color: var(--green);
+    border: 1.5px solid var(--green);
+    border-radius: 10px;
+    padding: 16px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 17px;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none;
+  }
+  .btn-vendas:hover { background: rgba(0,230,118,0.08); }
+  .btn-vendas:active { transform: scale(0.98); }
+
+  .footer {
+    margin-top: 40px;
+    font-size: 12px;
+    color: #333;
+    text-align: center;
+  }
+
+  /* HIDDEN */
+  .screen { display: none; }
+  .screen.active { display: block; }
+</style>
+</head>
+<body>
+
+<div class="header">Consultoria Premium · Diego Cardozo</div>
+
+<!-- PROGRESS BAR -->
+<div class="progress-wrap" id="progressWrap">
+  <div class="progress-info">
+    <span id="progressLabel">Pergunta 1 de 5</span>
+    <span id="progressPct">0%</span>
+  </div>
+  <div class="progress-bar">
+    <div class="progress-fill" id="progressFill" style="width:0%"></div>
+  </div>
+</div>
+
+<!-- TELA 0: INTRO -->
+<div class="card screen active" id="screenIntro">
+  <div class="badge">⚡ Diagnóstico Personalizado</div>
+  <h1 class="intro-title">Qual é o freio que trava sua <span>virada depois dos 40?</span></h1>
+  <p class="intro-sub">Responda 5 perguntas e receba um diagnóstico feito pra você — com os pontos exatos que estão travando sua transformação e o que fazer agora.</p>
+  <button class="btn-primary" onclick="startQuiz()">QUERO MEU DIAGNÓSTICO →</button>
+</div>
+
+<!-- TELAS 1–5: PERGUNTAS -->
+<div class="card screen" id="screenQ">
+  <div class="q-label" id="qLabel">Pergunta 1 / 5</div>
+  <h2 class="q-title" id="qTitle"></h2>
+  <div class="options" id="optionsWrap"></div>
+  <br>
+  <button class="btn-primary" id="btnNext" onclick="nextQuestion()" disabled>PRÓXIMA →</button>
+</div>
+
+<!-- TELA 6: CAPTURA -->
+<div class="card screen" id="screenCapture">
+  <h2 class="capture-title">Seu diagnóstico está pronto.</h2>
+  <p class="capture-sub">Informe seus dados para liberar seu resultado personalizado.</p>
+
+  <label class="field-label">Nome</label>
+  <input class="field-input" type="text" id="inputNome" placeholder="Seu nome completo">
+
+  <label class="field-label">WhatsApp</label>
+  <input class="field-input" type="tel" id="inputWpp" placeholder="(00) 00000-0000">
+
+  <div class="consent-wrap">
+    <input type="checkbox" class="consent-check" id="consentCheck">
+    <span class="consent-text">Concordo em receber contato da Consultoria Premium Diego Cardozo.</span>
+  </div>
+
+  <button class="btn-primary" id="btnVerDiag" onclick="submitCapture()">VER MEU DIAGNÓSTICO →</button>
+</div>
+
+<!-- TELA 7: LOADING -->
+<div class="card screen" id="screenLoading">
+  <div class="loading-wrap">
+    <div class="spinner"></div>
+    <div class="loading-title">Analisando seu perfil...</div>
+    <p class="loading-sub">Preparando seu diagnóstico personalizado.</p>
+  </div>
+</div>
+
+<!-- TELA 8: RESULTADO -->
+<div class="card screen" id="screenResult">
+  <div class="result-header">
+    <div class="result-icon" id="resultIcon">🎯</div>
+    <div class="result-name" id="resultName">Diagnóstico de</div>
+    <div class="result-title" id="resultTitle">Transformação 360°</div>
+    <div class="result-subtitle" id="resultSubtitle">Recomeço Duradouro</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <p class="result-text" id="resultText"></p>
+
+  <div class="result-section" id="sectionDesafios">
+    <div class="result-section-title desafios">⚠ Seus desafios</div>
+    <ul class="result-list" id="listDesafios"></ul>
+  </div>
+
+  <div class="result-section" id="sectionOportunidades">
+    <div class="result-section-title oportunidades">✦ Suas oportunidades</div>
+    <ul class="result-list" id="listOportunidades"></ul>
+  </div>
+
+  <div class="result-section" id="sectionPassos">
+    <div class="result-section-title passos">→ 3 passos para começar</div>
+    <ul class="result-list" id="listPassos"></ul>
+  </div>
+
+  <div class="cta-section">
+    <div class="cta-title">Pronto para transformar sua vida?</div>
+    <p class="cta-sub">Acompanhamento 100% individual com método, suporte contínuo e plano feito pra sua realidade.</p>
+    <a class="btn-whats" id="btnWhats" href="#" target="_blank">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      FALAR COM DIEGO NO WHATSAPP
+    </a>
+    <a class="btn-vendas" href="https://lpconsultoria.netlify.app/" target="_blank">
+      CONHECER A CONSULTORIA PREMIUM →
+    </a>
+  </div>
+</div>
+
+<div class="footer">© Diego Cardozo · Consultoria Premium</div>
+
+<script>
+const QUESTIONS = [
+  {
+    title: "Nos últimos anos, como você descreveria sua relação com o corpo?",
+    options: [
+      "Sinto que perdi o controle — engordei e não consigo reverter",
+      "Emagreci mas perdi massa e força, estou fraco",
+      "Tenho dores constantes que me impedem de treinar",
+      "Estou parado há tanto tempo que não sei nem por onde começar"
+    ]
+  },
+  {
+    title: "Qual é o maior obstáculo que te impede hoje?",
+    options: [
+      "Falta de tempo — trabalho, família, vida corrida",
+      "Não sei o que funciona para o meu corpo com essa idade",
+      "Já tentei várias vezes e nunca consegui manter",
+      "Medo de me machucar ou piorar algo que já dói"
+    ]
+  },
+  {
+    title: "Como está sua energia e disposição no dia a dia?",
+    options: [
+      "Acordo cansado e fico sem energia o dia todo",
+      "Tenho picos de energia mas caio rápido",
+      "Razoável, mas longe do que era antes dos 40",
+      "Boa energia, mas o corpo não acompanha"
+    ]
+  },
+  {
+    title: "Por que as tentativas anteriores não funcionaram?",
+    options: [
+      "Treinos genéricos que não encaixaram na minha rotina",
+      "Sem orientação — fiz por conta e me perdi",
+      "Dieta muito radical, não aguentei manter",
+      "Nunca tive acompanhamento de verdade, sumia quando travava"
+    ]
+  },
+  {
+    title: "Se tivesse um plano feito pra você e suporte real, quando começaria?",
+    options: [
+      "Hoje mesmo — estou pronto",
+      "Ainda essa semana",
+      "Esse mês",
+      "Ainda estou avaliando"
+    ]
+  }
+];
+
+let currentQ = 0;
+let answers = [];
+let userName = '';
+
+function startQuiz() {
+  showScreen('screenQ');
+  document.getElementById('progressWrap').classList.add('visible');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = QUESTIONS[currentQ];
+  document.getElementById('qLabel').textContent = `Pergunta ${currentQ + 1} / 5`;
+  document.getElementById('qTitle').textContent = q.title;
+
+  const wrap = document.getElementById('optionsWrap');
+  wrap.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const letters = ['A','B','C','D'];
+    const div = document.createElement('div');
+    div.className = 'option';
+    div.innerHTML = `<span class="opt-letter">${letters[i]}</span><span class="opt-text">${opt}</span>`;
+    div.onclick = () => selectOption(i, div);
+    wrap.appendChild(div);
+  });
+
+  document.getElementById('btnNext').disabled = true;
+  updateProgress();
+}
+
+function selectOption(idx, el) {
+  document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  answers[currentQ] = QUESTIONS[currentQ].options[idx];
+  document.getElementById('btnNext').disabled = false;
+}
+
+function nextQuestion() {
+  if (currentQ < 4) {
+    currentQ++;
+    const card = document.getElementById('screenQ');
+    card.style.animation = 'none';
+    card.offsetHeight;
+    card.style.animation = 'fadeUp 0.4s ease';
+    renderQuestion();
+  } else {
+    showScreen('screenCapture');
+    document.getElementById('progressWrap').classList.remove('visible');
+  }
+}
+
+function updateProgress() {
+  const pct = Math.round((currentQ / 5) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressPct').textContent = pct + '%';
+  document.getElementById('progressLabel').textContent = `Pergunta ${currentQ + 1} de 5`;
+}
+
+function submitCapture() {
+  const nome = document.getElementById('inputNome').value.trim();
+  const wpp = document.getElementById('inputWpp').value.trim();
+  const consent = document.getElementById('consentCheck').checked;
+
+  if (!nome || !wpp) { alert('Preencha seu nome e WhatsApp para continuar.'); return; }
+  if (!consent) { alert('Confirme o consentimento para continuar.'); return; }
+
+  userName = nome.split(' ')[0];
+  document.getElementById('resultName').textContent = `Diagnóstico de ${userName}`;
+
+  // Atualiza botão WhatsApp
+  const msg = encodeURIComponent(`Olá Diego! Acabei de fazer o diagnóstico e quero saber mais sobre a consultoria.`);
+  document.getElementById('btnWhats').href = `https://wa.me/5521987722727?text=${msg}`;
+
+  showScreen('screenLoading');
+
+  // Envia pro Formspree
+  sendToFormspree(nome, wpp);
+
+  // Chama API da Anthropic
+  callAnthropicAPI(nome, answers);
+}
+
+async function sendToFormspree(nome, wpp) {
+  try {
+    await fetch('https://formspree.io/f/xgoqjnly', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        nome,
+        whatsapp: wpp,
+        pergunta_1: QUESTIONS[0].title,
+        resposta_1: answers[0] || '',
+        pergunta_2: QUESTIONS[1].title,
+        resposta_2: answers[1] || '',
+        pergunta_3: QUESTIONS[2].title,
+        resposta_3: answers[2] || '',
+        pergunta_4: QUESTIONS[3].title,
+        resposta_4: answers[3] || '',
+        pergunta_5: QUESTIONS[4].title,
+        resposta_5: answers[4] || '',
+      })
+    });
+  } catch(e) { console.error('Formspree error:', e); }
+}
+
+async function callAnthropicAPI(nome, respostas) {
+  const prompt = `Você é Diego Cardozo, personal trainer especialista em transformação física para pessoas acima de 40 anos.
+
+Com base nas respostas abaixo, crie um diagnóstico personalizado para ${nome}.
+
+RESPOSTAS DO QUIZ:
+1. Relação com o corpo: ${respostas[0]}
+2. Maior obstáculo: ${respostas[1]}
+3. Energia e disposição: ${respostas[2]}
+4. Por que não funcionou antes: ${respostas[3]}
+5. Quando começaria: ${respostas[4]}
+
+Responda APENAS em JSON válido, sem markdown, sem explicações fora do JSON. Use este formato exato:
+{
+  "icone": "(emoji que representa o perfil)",
+  "titulo": "(título do perfil em 2-4 palavras, ex: Recomeço Necessário)",
+  "subtitulo": "(frase curta de impacto, ex: O corpo pede ação agora)",
+  "texto": "(2-3 frases personalizadas que falam diretamente com ${nome} sobre a situação dela/dele, usando tom direto e empático. Mencione os pontos específicos das respostas.)",
+  "desafios": ["desafio 1", "desafio 2", "desafio 3"],
+  "oportunidades": ["oportunidade 1", "oportunidade 2", "oportunidade 3"],
+  "passos": ["passo 1 concreto", "passo 2 concreto", "passo 3 concreto"]
+}`;
+
+  try {
+    const response = await fetch('/.netlify/functions/diagnostico', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt })
+    });
+
+    const data = await response.json();
+    const raw = data.content[0].text;
+    const clean = raw.replace(/```json|```/g, '').trim();
+    const result = JSON.parse(clean);
+    showResult(result);
+  } catch(e) {
+    console.error('API error:', e);
+    showFallbackResult();
+  }
+}
+
+function showResult(r) {
+  document.getElementById('resultIcon').textContent = r.icone || '🎯';
+  document.getElementById('resultTitle').textContent = r.titulo || 'Transformação 360°';
+  document.getElementById('resultSubtitle').textContent = r.subtitulo || '';
+  document.getElementById('resultText').textContent = r.texto || '';
+
+  populateList('listDesafios', r.desafios || []);
+  populateList('listOportunidades', r.oportunidades || []);
+  populateList('listPassos', r.passos || []);
+
+  showScreen('screenResult');
+}
+
+function populateList(id, items) {
+  const ul = document.getElementById(id);
+  ul.innerHTML = '';
+  items.forEach(item => {
+    const li = document.createElement('li');
+    li.textContent = item;
+    ul.appendChild(li);
+  });
+}
+
+function showFallbackResult() {
+  showResult({
+    icone: '🎯',
+    titulo: 'Transformação 360°',
+    subtitulo: 'Recomeço duradouro',
+    texto: 'Você chegou no momento certo. Com base no que compartilhou, fica claro que você já sabe o que precisa — o que faltou até agora foi um plano feito para a sua realidade e alguém do seu lado para não deixar você parar.',
+    desafios: ['Múltiplos obstáculos acumulados', 'Histórico de tentativas sem suporte real', 'Rotina que dificulta a consistência'],
+    oportunidades: ['Consciência clara do que precisa mudar', 'Momento de decisão — você está pronto', 'Potencial de transformação real com método certo'],
+    passos: ['Agendar uma conversa com Diego para entender seu caso', 'Fazer a anamnese completa e montar seu plano', 'Começar com protocolo adaptado à sua rotina']
+  });
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
