@@ -759,7 +759,8 @@ Responda APENAS em JSON válido, sem markdown, sem explicações fora do JSON. U
     });
 
     const data = await response.json();
-    const raw = data.content[0].text;
+    if (data.error) throw new Error(data.error);
+    const raw = data.text;
     const clean = raw.replace(/```json|```/g, '').trim();
     const result = JSON.parse(clean);
     showResult(result);
